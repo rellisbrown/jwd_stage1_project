@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import useChartObject from '../../utils/qlik/useChartObject';
 import SortIcon from '../../assets/icons/SortIcon';
+import SalesRepTableRow from './SalesRepTableRow';
 
 const StyledTableContainer = styled.div`
   display: flex;
@@ -59,7 +60,10 @@ const StyledTableHeaderCell = styled.th`
   padding: 0.5rem 1rem 0.5rem 1rem;
   color: white;
   cursor: pointer;
-  /* display: flex; */
+`;
+
+const StyledTableHeaderCellInnerContainer = styled.div`
+  display: flex;
 `;
 
 const StyledTableCell = styled.td`
@@ -159,7 +163,7 @@ const SalesRepTable = ({ doc, objectId }) => {
   }
 
   const helper = {};
-  const chartDataSum = chartData
+  const chartDataSum = chartData // Getting the sum of each field value grouped by sales rep name
     .reduce((acc, object) => {
       const key = object.name;
       if (!helper[key]) {
@@ -175,7 +179,6 @@ const SalesRepTable = ({ doc, objectId }) => {
         helper[key].revenue += object.revenue;
         helper[key].grossProfit += object.grossProfit;
       }
-
       return acc;
     }, [])
     .filter((item) => item.name !== '-'); // need to manually include total figures below, as they are not present when a selection is made
@@ -252,97 +255,65 @@ const SalesRepTable = ({ doc, objectId }) => {
               onClick={() => handleSortClick('name')}
               style={{ textAlign: 'left' }}
             >
-              <div style={{ display: 'flex' }}>
+              <StyledTableHeaderCellInnerContainer>
                 <span>Sales Rep Name</span>
                 <StyledSortIcon
                   sortStatus={getSortStatus('name')}
                   direction={sort.direction}
                   className="className"
                 />
-              </div>
+              </StyledTableHeaderCellInnerContainer>
             </StyledTableHeaderCell>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('revenue')}
               style={{ paddingLeft: '2rem', paddingRight: '0rem' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <StyledTableHeaderCellInnerContainer
+                style={{ justifyContent: 'flex-end' }}
+              >
                 <span>Total Revenue (£)</span>
                 <StyledSortIcon
                   sortStatus={getSortStatus('revenue')}
                   direction={sort.direction}
                   className="className"
                 />
-              </div>
+              </StyledTableHeaderCellInnerContainer>
             </StyledTableHeaderCell>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('salesNum')}
               style={{ paddingLeft: '2rem', width: '130px' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <StyledTableHeaderCellInnerContainer
+                style={{ justifyContent: 'flex-end' }}
+              >
                 <span>Total Number of Sales</span>
                 <StyledSortIcon
                   sortStatus={getSortStatus('salesNum')}
                   direction={sort.direction}
                   className="className"
                 />
-              </div>
+              </StyledTableHeaderCellInnerContainer>
             </StyledTableHeaderCell>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('grossProfit')}
             >
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <StyledTableHeaderCellInnerContainer
+                style={{ justifyContent: 'flex-end' }}
+              >
                 <span>Margin (£)</span>
                 <StyledSortIcon
                   sortStatus={getSortStatus('grossProfit')}
                   direction={sort.direction}
                   className="className"
                 />
-              </div>
+              </StyledTableHeaderCellInnerContainer>
             </StyledTableHeaderCell>
           </tr>
         </StyledTableHeader>
         <tbody>
-          {chartDataSum
-            .sort(compare)
-
-            .map((item, index) => (
-              <StyledTableRow key={item.name} index={index}>
-                <StyledTableCell
-                  style={{
-                    textAlign: 'left',
-                    backgroundColor: '#eaeaea',
-                    color: 'black',
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                  }}
-                >
-                  {item.name}
-                </StyledTableCell>
-                <StyledTableCell style={{ paddingRight: '2rem' }}>
-                  {Number(item.revenue.toFixed(2)).toLocaleString('en-UK', {
-                    minimumFractionDigits: 2,
-                  })}
-                </StyledTableCell>
-                <StyledTableCell
-                  style={{
-                    textAlign: 'center',
-                    paddingLeft: '2rem',
-                    paddingRight: '2rem',
-                  }}
-                >
-                  {item.salesNum.toLocaleString('en-UK')}
-                </StyledTableCell>
-                <StyledTableCell
-                  style={{
-                    paddingRight: '1.5rem',
-                  }}
-                >
-                  {Number(item.grossProfit.toFixed(2)).toLocaleString('en-UK', {
-                    minimumFractionDigits: 2,
-                  })}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+          {chartDataSum.sort(compare).map((item, index) => (
+            <SalesRepTableRow key={item.name} item={item} index={index} />
+          ))}
         </tbody>
         <tfoot>
           <StyledTableRow style={{ backgroundColor: '#bb2b2b' }}>
@@ -355,9 +326,11 @@ const SalesRepTable = ({ doc, objectId }) => {
                 fontWeight: 600,
               }}
             >
-              Total:
+              Total
             </StyledTableCell>
-            <StyledTableCell style={{ color: 'white', fontWeight: 600 }}>
+            <StyledTableCell
+              style={{ color: 'white', fontWeight: 600, paddingRight: '2rem' }}
+            >
               {Number(totalRevenue.toFixed(2)).toLocaleString('en-UK', {
                 minimumFractionDigits: 2,
               })}
@@ -366,13 +339,16 @@ const SalesRepTable = ({ doc, objectId }) => {
               style={{
                 textAlign: 'center',
                 paddingLeft: '2rem',
+                paddingRight: '2.5rem',
                 color: 'white',
                 fontWeight: 600,
               }}
             >
               {totalSalesNum.toLocaleString('en-UK')}
             </StyledTableCell>
-            <StyledTableCell style={{ color: 'white', fontWeight: 600 }}>
+            <StyledTableCell
+              style={{ color: 'white', fontWeight: 600, paddingRight: '1.5rem' }}
+            >
               {Number(totalGrossProfit.toFixed(2)).toLocaleString('en-UK', {
                 minimumFractionDigits: 2,
               })}
