@@ -131,134 +131,148 @@ const WaterfallChart = ({ doc, objectId }) => {
 
   return (
     <StyledChartContainer ref={wrapperRef}>
-      {dimensions ? (
+      {totalRevenue ? (
         <>
-          <svg style={{ width: '100%' }}>
-            <defs>
-              <linearGradient id="revGrad" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop
-                  offset="25%"
-                  stopColor="rgb(60,184,80)"
-                  stopOpacity="1.00"
+          {dimensions ? (
+            <>
+              <svg style={{ width: '100%' }}>
+                <defs>
+                  <linearGradient
+                    id="revGrad"
+                    x1="0%"
+                    y1="50%"
+                    x2="100%"
+                    y2="50%"
+                  >
+                    <stop
+                      offset="25%"
+                      stopColor="rgb(60,184,80)"
+                      stopOpacity="1.00"
+                    />
+                    <stop
+                      offset="50%"
+                      stopColor="rgb(58,171,56)"
+                      stopOpacity="1.00"
+                    />
+                    <stop
+                      offset="75%"
+                      stopColor="rgb(46,164,94)"
+                      stopOpacity="1.00"
+                    />
+                  </linearGradient>
+                  <linearGradient
+                    id="revGradTotal"
+                    x1="0%"
+                    y1="50%"
+                    x2="100%"
+                    y2="50%"
+                  >
+                    <stop
+                      offset="25%"
+                      stopColor="rgb(60,114,184)"
+                      stopOpacity="1.00"
+                    />
+                    <stop
+                      offset="50%"
+                      stopColor="rgb(56,57,171)"
+                      stopOpacity="1.00"
+                    />
+                    <stop
+                      offset="75%"
+                      stopColor="rgb(53,46,164)"
+                      stopOpacity="1.00"
+                    />
+                  </linearGradient>
+                </defs>
+                <rect
+                  transform={`translate(${margin.left}, ${margin.top})`}
+                  width={innerWidthChart}
+                  height={innerHeightChart}
+                  fill={fillColors.backdrop}
                 />
-                <stop
-                  offset="50%"
-                  stopColor="rgb(58,171,56)"
-                  stopOpacity="1.00"
+                <XAxis dimensions={dimensions} margin={margin} />
+                <YAxis
+                  scale={yScale}
+                  dimensions={dimensions}
+                  margin={margin}
+                  tickFormat={yTickFormat}
+                  yValues={yValues}
+                  bandWidth={bandWidth}
                 />
-                <stop
-                  offset="75%"
-                  stopColor="rgb(46,164,94)"
-                  stopOpacity="1.00"
-                />
-              </linearGradient>
-              <linearGradient
-                id="revGradTotal"
-                x1="0%"
-                y1="50%"
-                x2="100%"
-                y2="50%"
-              >
-                <stop
-                  offset="25%"
-                  stopColor="rgb(60,114,184)"
-                  stopOpacity="1.00"
-                />
-                <stop
-                  offset="50%"
-                  stopColor="rgb(56,57,171)"
-                  stopOpacity="1.00"
-                />
-                <stop
-                  offset="75%"
-                  stopColor="rgb(53,46,164)"
-                  stopOpacity="1.00"
-                />
-              </linearGradient>
-            </defs>
-            <rect
-              transform={`translate(${margin.left}, ${margin.top})`}
-              width={innerWidthChart}
-              height={innerHeightChart}
-              fill={fillColors.backdrop}
-            />
-            <XAxis dimensions={dimensions} margin={margin} />
-            <YAxis
-              scale={yScale}
-              dimensions={dimensions}
-              margin={margin}
-              tickFormat={yTickFormat}
-              yValues={yValues}
-              bandWidth={bandWidth}
-            />
-            <g transform={`translate(${margin.left}, ${margin.top})`}>
-              {chartDataCumulative.map((item) => (
-                <>
+                <g transform={`translate(${margin.left}, ${margin.top})`}>
+                  {chartDataCumulative.map((item) => (
+                    <>
+                      <Bar
+                        key={`Bar-${item.quarter}`}
+                        bandWidth={bandWidth}
+                        xScale={xScale}
+                        yScale={yScale}
+                        data={item}
+                        fill={fillColors.revenue}
+                        stroke={fillColors.revenueStroke}
+                      />
+                      <Connector
+                        key={`Connector-${item.quarter}`}
+                        bandWidth={bandWidth}
+                        xScale={xScale}
+                        yScale={yScale}
+                        data={item}
+                      />
+                    </>
+                  ))}
                   <Bar
-                    key={`Bar-${item.quarter}-${item.revenue}`}
+                    key="Bar-Total"
                     bandWidth={bandWidth}
                     xScale={xScale}
                     yScale={yScale}
-                    data={item}
-                    fill={fillColors.revenue}
-                    stroke={fillColors.revenueStroke}
+                    data={{
+                      quarter: 'Total',
+                      accRevenue: totalRevenue,
+                      revenue: totalRevenue,
+                    }}
+                    fill={fillColors.revenueTotal}
+                    stroke={fillColors.revenueTotalStroke}
                   />
-                  <Connector
-                    key={`Connector-${item.quarter}-${item.revenue}`}
-                    bandWidth={bandWidth}
-                    xScale={xScale}
-                    yScale={yScale}
-                    data={item}
-                  />
-                </>
-              ))}
-              <Bar
-                key={`Bar-Total-${totalRevenue}`}
-                bandWidth={bandWidth}
-                xScale={xScale}
-                yScale={yScale}
-                data={{
-                  quarter: 'Total',
-                  accRevenue: totalRevenue,
-                  revenue: totalRevenue,
-                }}
-                fill={fillColors.revenueTotal}
-                stroke={fillColors.revenueTotalStroke}
-              />
-            </g>
-          </svg>
+                </g>
+              </svg>
+            </>
+          ) : (
+            <></>
+          )}
+          {chartDataCumulative.map((item) => (
+            <BarText
+              key={`Text-${item.quarter}`}
+              bandWidth={bandWidth}
+              xScale={xScale}
+              yScale={yScale}
+              data={item}
+              margin={margin}
+            />
+          ))}
+          <BarText
+            key="Text-Total"
+            bandWidth={bandWidth}
+            xScale={xScale}
+            yScale={yScale}
+            data={{
+              quarter: 'Total',
+              accRevenue: totalRevenue,
+              revenue: totalRevenue,
+            }}
+            margin={margin}
+          />
+          <Label
+            margin={margin}
+            innerHeight={innerHeightChart}
+            innerWidth={innerWidthChart}
+            text={xLabel}
+          />
         </>
       ) : (
-        <></>
+        <div style={{ margin: 'auto' }}>
+          ...loading (please ensure that the appropriate Qlik App is open)
+        </div>
       )}
-      {chartDataCumulative.map((item) => (
-        <BarText
-          key={`Text-${item.quarter}-${item.revenue}`}
-          bandWidth={bandWidth}
-          xScale={xScale}
-          yScale={yScale}
-          data={item}
-          margin={margin}
-        />
-      ))}
-      <BarText
-        key={`Text-Total-${totalRevenue}`}
-        bandWidth={bandWidth}
-        xScale={xScale}
-        yScale={yScale}
-        data={{
-          quarter: 'Total',
-          accRevenue: totalRevenue,
-          revenue: totalRevenue,
-        }}
-        margin={margin}
-      />
-      <Label
-        margin={margin}
-        innerHeight={innerHeightChart}
-        innerWidth={innerWidthChart}
-        text={xLabel}
-      />
     </StyledChartContainer>
   );
 };

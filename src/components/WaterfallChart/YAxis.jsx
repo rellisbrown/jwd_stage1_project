@@ -18,10 +18,12 @@ const YAxis = ({
 }) => {
   const ticks = yValues.map((value) => ({
     value,
-    offset: scale(value) + bandWidth / 2 + bandWidth / 12,
+    offset:
+      scale(value) +
+      bandWidth / 2 +
+      bandWidth / 12 -
+      (5 - yValues.length) * (bandWidth / 48), // adjusting for positioning of labels when different quarters are selected
   }));
-
-  console.log(ticks);
 
   return (
     <g transform={`translate(${margin.left}, 0)`}>
