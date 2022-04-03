@@ -5,6 +5,7 @@ import SortIcon from '../../assets/icons/SortIcon';
 import SalesRepTableRow from './SalesRepTableRow';
 
 const StyledTableContainer = styled.div`
+  width: 50%;
   display: flex;
   margin: 2rem auto auto auto;
   max-height: 500px;
@@ -38,6 +39,7 @@ const StyledTableContainer = styled.div`
 
 const StyledTable = styled.table`
   border-spacing: 0px;
+  width: 100%;
 `;
 
 const StyledTableHeader = styled.thead`
@@ -57,9 +59,10 @@ const StyledTableRow = styled.tr`
 `;
 
 const StyledTableHeaderCell = styled.th`
-  padding: 0.5rem 1rem 0.5rem 1rem;
+  padding: 0.5rem 0rem 0.5rem 1rem;
   color: white;
   cursor: pointer;
+  font-size: 0.8rem;
 `;
 
 const StyledTableHeaderCellInnerContainer = styled.div`
@@ -70,6 +73,7 @@ const StyledTableCell = styled.td`
   padding: 0.5rem 1rem 0.5rem 1rem;
   text-align: right;
   color: #3d3d4a;
+  font-size: 0.8rem;
 `;
 
 const StyledSortIcon = styled(SortIcon)`
@@ -86,54 +90,18 @@ const StyledSortIcon = styled(SortIcon)`
   }
 `;
 
-const SalesRepTable = ({ doc, objectId }) => {
+const SalesRepTable = ({ doc, objectId, qPages }) => {
   const [chartObject, setChartObject] = useState();
-  /* const [chartLayout, setChartLayout] = useState(); */
   const [chartHCData, setChartHCData] = useState([]);
 
-  const qPages = useMemo(
-    () => [
-      {
-        qLeft: 0,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 101,
-      },
-      {
-        qLeft: 1,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 101,
-      },
-      {
-        qLeft: 2,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 101,
-      },
-      {
-        qLeft: 3,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 101,
-      },
-      {
-        qLeft: 4,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 101,
-      },
-    ],
-    []
-  );
+  const qPagesArray = useMemo(() => qPages, [qPages]);
 
   useChartObject({
     doc,
     objectId,
     chartObject,
-    qPages,
+    qPagesArray,
     setChartObject,
-    /* setChartLayout, */
     setChartHCData,
   });
 
@@ -253,7 +221,7 @@ const SalesRepTable = ({ doc, objectId }) => {
           <tr>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('name')}
-              style={{ textAlign: 'left' }}
+              style={{ textAlign: 'center' }}
             >
               <StyledTableHeaderCellInnerContainer>
                 <span>Sales Rep Name</span>
@@ -266,7 +234,7 @@ const SalesRepTable = ({ doc, objectId }) => {
             </StyledTableHeaderCell>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('revenue')}
-              style={{ paddingLeft: '2rem', paddingRight: '0rem' }}
+              style={{ paddingLeft: '1rem', paddingRight: '0rem' }}
             >
               <StyledTableHeaderCellInnerContainer
                 style={{ justifyContent: 'flex-end' }}
@@ -281,7 +249,7 @@ const SalesRepTable = ({ doc, objectId }) => {
             </StyledTableHeaderCell>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('salesNum')}
-              style={{ paddingLeft: '2rem', width: '130px' }}
+              style={{ paddingLeft: '1rem', width: '130px' }}
             >
               <StyledTableHeaderCellInnerContainer
                 style={{ justifyContent: 'flex-end' }}
@@ -296,6 +264,7 @@ const SalesRepTable = ({ doc, objectId }) => {
             </StyledTableHeaderCell>
             <StyledTableHeaderCell
               onClick={() => handleSortClick('grossProfit')}
+              style={{ paddingRight: '1rem' }}
             >
               <StyledTableHeaderCellInnerContainer
                 style={{ justifyContent: 'flex-end' }}
@@ -322,7 +291,7 @@ const SalesRepTable = ({ doc, objectId }) => {
                 textAlign: 'left',
                 backgroundColor: '#991010',
                 color: 'white',
-                fontSize: '1.1rem',
+                fontSize: '0.9rem',
                 fontWeight: 600,
               }}
             >
@@ -347,7 +316,11 @@ const SalesRepTable = ({ doc, objectId }) => {
               {totalSalesNum.toLocaleString('en-UK')}
             </StyledTableCell>
             <StyledTableCell
-              style={{ color: 'white', fontWeight: 600, paddingRight: '1.5rem' }}
+              style={{
+                color: 'white',
+                fontWeight: 600,
+                paddingRight: '1.5rem',
+              }}
             >
               {Number(totalGrossProfit.toFixed(2)).toLocaleString('en-UK', {
                 minimumFractionDigits: 2,

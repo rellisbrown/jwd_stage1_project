@@ -13,7 +13,7 @@ const StyledChartContainer = styled.div`
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
-  margin: auto;
+  margin: auto 0rem auto auto;
 `;
 
 const StyledChartTitle = styled.h4`
@@ -50,42 +50,89 @@ const StyledTriangleIcon = styled(TriangleIcon)`
 const StyledChangeText = styled.p`
   margin: auto auto auto 0;
   font-size: 0.9rem;
-  /* font-weight: 600; */
   color: ${(props) => props.color};
 `;
 
-const KPIChartSimple = ({ doc, objectId, chartTitle }) => {
+const KPIChartSimple = ({ doc, objectId, chartTitle, qPages }) => {
   const [chartObject, setChartObject] = useState();
-  /* const [chartLayout, setChartLayout] = useState(); */
   const [chartHCData, setChartHCData] = useState([]);
 
-  const qPages = useMemo(
-    () => [
-      {
-        qLeft: 0,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 1,
-      },
-      {
-        qLeft: 1,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 1,
-      },
-    ],
-    []
-  );
+  const qPagesArray = useMemo(() => qPages, [qPages]);
 
   useChartObject({
     doc,
     objectId,
     chartObject,
-    qPages,
+    qPagesArray,
     setChartObject,
-    /* setChartLayout, */
     setChartHCData,
-  }); // {} allow for optional Layout / HCData arguments
+  });
+
+  // Decided to get Total Revenue and Total Expenses from Task 1.3 chart to make the expenses and profit figures as consistent as possible with other data, hence the code below:
+  // Props werent passed into the component due to the temporary nature of the solution
+
+  const [chartObjectRevExp, setChartObjectRevExp] = useState();
+
+  const [chartRevExpHCData, setChartRevExpHCData] = useState([]);
+
+  const qPagesArrayRevExp = useMemo(
+    () => [
+      {
+        qLeft: 0,
+        qTop: 0,
+        qWidth: 1,
+        qHeight: 4,
+      },
+      {
+        qLeft: 1,
+        qTop: 0,
+        qWidth: 1,
+        qHeight: 4,
+      },
+      {
+        qLeft: 2,
+        qTop: 0,
+        qWidth: 1,
+        qHeight: 4,
+      },
+      {
+        qLeft: 3,
+        qTop: 0,
+        qWidth: 1,
+        qHeight: 4,
+      },
+    ],
+    []
+  );
+
+  const revExpObjectId = 'xWWjCN';
+
+  useChartObject({
+    doc,
+    objectId: revExpObjectId,
+    chartObject: chartObjectRevExp,
+    qPagesArray: qPagesArrayRevExp,
+    setChartObject: setChartObjectRevExp,
+    setChartHCData: setChartRevExpHCData,
+  });
+
+  const chartMatrixRevExp = chartRevExpHCData.map((item) => item.qMatrix);
+
+  let totalRevenue = 0;
+  if (chartMatrixRevExp[1]) {
+    for (const item of chartMatrixRevExp[1]) {
+      totalRevenue += item[0].qNum;
+    }
+  }
+
+  let totalExpenses = 0;
+  if (chartMatrixRevExp[2]) {
+    for (const item of chartMatrixRevExp[2]) {
+      totalExpenses += item[0].qNum;
+    }
+  }
+
+  //
 
   const chartData = chartHCData.map((item) => item.qMatrix[0][0]);
 
@@ -99,12 +146,19 @@ const KPIChartSimple = ({ doc, objectId, chartTitle }) => {
     return 'grey';
   };
 
+  let revenueExpense = 0;
+  if (chartTitle === 'Total Revenue') {
+    revenueExpense = totalRevenue;
+  } else {
+    revenueExpense = totalExpenses;
+  }
+
   return (
     <StyledChartContainer>
       <StyledChartTitle>{chartTitle}</StyledChartTitle>
-      {chartData[0] ? (
+      {revenueExpense ? (
         <StyledValueText>
-          {Number((chartData[0].qNum / 1000000).toFixed(0)).toLocaleString(
+          {Number((revenueExpense / 1000000).toFixed(0)).toLocaleString(
             'en-UK'
           )}{' '}
           m

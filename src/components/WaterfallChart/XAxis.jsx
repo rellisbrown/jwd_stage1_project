@@ -1,11 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const StyledXAxisText = styled.text`
-  font-size: 10px;
-  text-anchor: start;
-  transform: translateY(12px) rotate(60deg);
-`;
 
 const XAxis = ({ dimensions, margin }) => (
   <g transform={`translate(0, ${dimensions.height - margin.bottom})`}>

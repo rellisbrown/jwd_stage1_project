@@ -13,7 +13,7 @@ const StyledChartContainer = styled.div`
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
-  margin: auto;
+  margin: auto 0rem auto auto;
 `;
 
 const StyledChartTitle = styled.h4`
@@ -50,54 +50,23 @@ const StyledTriangleIcon = styled(TriangleIcon)`
 const StyledChangeText = styled.p`
   margin: auto auto auto 0;
   font-size: 0.9rem;
-  /* font-weight: 600; */
   color: ${(props) => props.color};
 `;
 
-const KPIChartProfit = ({ doc, objectId, chartTitle }) => {
+const KPIChartProfit = ({ doc, objectId, chartTitle, qPages }) => {
   const [chartObject, setChartObject] = useState();
-  /* const [chartLayout, setChartLayout] = useState(); */
   const [chartHCData, setChartHCData] = useState([]);
 
-  const qPages = useMemo(
-    () => [
-      {
-        qLeft: 0,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 4,
-      },
-      {
-        qLeft: 1,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 4,
-      },
-      {
-        qLeft: 2,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 4,
-      },
-      {
-        qLeft: 3,
-        qTop: 0,
-        qWidth: 1,
-        qHeight: 4,
-      },
-    ],
-    []
-  );
+  const qPagesArray = useMemo(() => qPages, [qPages]);
 
   useChartObject({
     doc,
     objectId,
     chartObject,
-    qPages,
+    qPagesArray,
     setChartObject,
-    /* setChartLayout, */
     setChartHCData,
-  }); // {} allow for optional Layout / HCData arguments
+  });
 
   const chartMatrix = chartHCData.map((item) => item.qMatrix);
 

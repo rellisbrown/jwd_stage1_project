@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledYAxisText = styled.text`
-  font-size: 16px;
   text-anchor: end;
-  transform: translate(-17px, -3px);
+  transform: ${(props) => props.offset};
   font-weight: 600;
 `;
 
@@ -17,12 +16,12 @@ const YAxis = ({
   bandWidth,
 }) => {
   const ticks = yValues.map((value) => ({
-    value,
+    value: value.split(' '),
     offset:
       scale(value) +
       bandWidth / 2 +
       bandWidth / 12 -
-      (5 - yValues.length) * (bandWidth / 48), // adjusting for positioning of labels when different quarters are selected
+      (6 - yValues.length) * (bandWidth / 48), // adjusting for positioning of labels when different quarters are selected
   }));
 
   return (
@@ -42,7 +41,32 @@ const YAxis = ({
       />
       {ticks.map(({ value, offset }) => (
         <g key={value} transform={`translate(0, ${offset + margin.top})`}>
-          <StyledYAxisText key={value}>{tickFormat(value)}</StyledYAxisText>
+          {value.length <= 1 ? (
+            <StyledYAxisText
+              fontSize="16px"
+              offset="translate(-17px, 0px)"
+              key={value}
+            >
+              {tickFormat(value[0])}
+            </StyledYAxisText>
+          ) : (
+            <>
+              <StyledYAxisText
+                fontSize="14px"
+                key={value[0]}
+                offset={`translate(-17px, ${-bandWidth / 12 - 3}px)`}
+              >
+                {tickFormat(value[0])}
+              </StyledYAxisText>
+              <StyledYAxisText
+                fontSize="14px"
+                key={value[1]}
+                offset={`translate(-17px, ${bandWidth / 12 + 3}px)`}
+              >
+                {tickFormat(value[1])}
+              </StyledYAxisText>
+            </>
+          )}
         </g>
       ))}
     </g>

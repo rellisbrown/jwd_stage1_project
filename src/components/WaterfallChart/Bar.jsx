@@ -10,9 +10,9 @@ const StyledRect = styled.rect`
 `;
 
 const Bar = ({ bandWidth, xScale, yScale, data, fill, stroke }) => {
-  const width = xScale(data.revenue);
-  const y = yScale(data.quarter);
-  const x = xScale(data.accRevenue) - xScale(data.revenue);
+  const width = xScale(data.value);
+  const y = yScale(data.field);
+  const x = xScale(data.accValue) - xScale(data.value);
   return (
     <StyledRect
       width={width}
