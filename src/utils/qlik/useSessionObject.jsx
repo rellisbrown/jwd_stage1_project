@@ -14,7 +14,7 @@ const useSessionObject = (
       },
       qListObjectDef: {
         qDef: {
-          qFieldDefs: [fieldName, 'Reveneue'],
+          qFieldDefs: [fieldName],
           /* qSortCriterias: [{ qSortByState: 1 }], */
         },
         qShowAlternatives: true,
