@@ -59,7 +59,10 @@ const StyledSliderContainer = styled.div`
 `;
 
 const StyledSliderText = styled.h4`
-  margin: auto 1rem; ;
+  margin: auto 1rem;
+  @media (max-width: 600px) {
+    font-size: 12px;
+  }
 `;
 
 const Slider = ({ variants, variantChecked, setVariantChecked }) => (

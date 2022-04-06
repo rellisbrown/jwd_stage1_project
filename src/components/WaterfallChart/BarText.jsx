@@ -14,6 +14,9 @@ const StyledTextDiv = styled.div`
 const StyledText = styled.span`
   margin: auto;
   color: ${(props) => (props.alternateColor ? 'black' : 'white')};
+  @media (max-width: 600px) {
+    font-size: 12px;
+  }
 `;
 
 const BarText = ({ bandWidth, xScale, yScale, data, margin }) => {

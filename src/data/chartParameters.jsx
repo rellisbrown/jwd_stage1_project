@@ -3,6 +3,7 @@ const chartParameters = {
     {
       objectId: 'tWJJyZ',
       title: 'Total Revenue',
+      type: 'simple',
       qPages: [
         {
           qLeft: 0,
@@ -21,6 +22,7 @@ const chartParameters = {
     {
       objectId: 'eMsVVT',
       title: 'Total Expenses',
+      type: 'simple',
       qPages: [
         {
           qLeft: 0,
@@ -39,6 +41,7 @@ const chartParameters = {
     {
       objectId: 'xWWjCN',
       title: 'Total Profit',
+      type: 'profit',
       qPages: [
         {
           qLeft: 0,

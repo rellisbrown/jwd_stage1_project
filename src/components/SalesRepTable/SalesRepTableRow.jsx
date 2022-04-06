@@ -15,43 +15,60 @@ const StyledTableCell = styled.td`
   text-align: right;
   color: #3d3d4a;
   font-size: 0.8rem;
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+  }
+`;
+
+const StyledTableCellName = styled(StyledTableCell)`
+  text-align: left;
+  background-color: #eaeaea;
+  color: black;
+  font-weight: 600;
+`;
+
+const StyledTableCellRevenue = styled(StyledTableCell)`
+  padding-right: 2rem;
+  @media (max-width: 600px) {
+    padding-right: 1rem;
+  }
+`;
+
+const StyledTableCellSales = styled(StyledTableCell)`
+  padding-right: 2.5rem;
+  padding-left: 2rem;
+  text-align: center;
+  @media (max-width: 600px) {
+    padding-right: 0.5rem;
+    padding-left: 0rem;
+  }
+`;
+
+const StyledTableCellMargin = styled(StyledTableCell)`
+  padding-right: 1.5rem;
+
+  @media (max-width: 600px) {
+    padding-right: 0.75rem;
+  }
 `;
 
 const SalesRepTableRow = ({ item, index }) => (
   <StyledTableRow index={index}>
-    <StyledTableCell
-      style={{
-        textAlign: 'left',
-        backgroundColor: '#eaeaea',
-        color: 'black',
-        fontWeight: 600,
-      }}
-    >
-      {item.name}
-    </StyledTableCell>
-    <StyledTableCell style={{ paddingRight: '2rem' }}>
+    <StyledTableCellName>{item.name}</StyledTableCellName>
+    <StyledTableCellRevenue>
       {Number(item.revenue.toFixed(2)).toLocaleString('en-UK', {
         minimumFractionDigits: 2,
       })}
-    </StyledTableCell>
-    <StyledTableCell
-      style={{
-        textAlign: 'center',
-        paddingLeft: '2rem',
-        paddingRight: '2.5rem',
-      }}
-    >
+    </StyledTableCellRevenue>
+    <StyledTableCellSales>
       {item.salesNum.toLocaleString('en-UK')}
-    </StyledTableCell>
-    <StyledTableCell
-      style={{
-        paddingRight: '1.5rem',
-      }}
-    >
+    </StyledTableCellSales>
+    <StyledTableCellMargin>
       {Number(item.grossProfit.toFixed(2)).toLocaleString('en-UK', {
         minimumFractionDigits: 2,
       })}
-    </StyledTableCell>
+    </StyledTableCellMargin>
   </StyledTableRow>
 );
 

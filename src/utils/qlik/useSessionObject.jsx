@@ -1,12 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useContext, useState } from 'react';
+import { QlikContext } from './qlikContext';
 
-const useSessionObject = (
-  doc,
-  fieldName,
-  sessionObject,
-  setSessionObject,
-  setSessionObjectLayout
-) => {
+const useSessionObject = (fieldName) => {
+  const { doc } = useContext(QlikContext);
+  const [sessionObject, setSessionObject] = useState();
+  const [sessionObjectLayout, setSessionObjectLayout] = useState();
   const getSessionObject = useCallback(async () => {
     const object = await doc.createSessionObject({
       qInfo: {
@@ -54,6 +52,10 @@ const useSessionObject = (
       }
     };
   }, [doc, fieldName, sessionObject, getSessionObject, updateCallback]);
+  return {
+    sessionObject,
+    sessionObjectLayout,
+  };
 };
 
 export default useSessionObject;

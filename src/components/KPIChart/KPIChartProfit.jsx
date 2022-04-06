@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import useChartObject from '../../utils/qlik/useChartObject';
 import TriangleIcon from '../../assets/icons/TriangleIcon';
+import { useKPIChartProfitData } from '../../utils/dataTransformations';
 
 const StyledChartContainer = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ const StyledChartContainer = styled.div`
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
-  margin: auto 0rem auto auto;
+  margin: auto auto auto auto;
 `;
 
 const StyledChartTitle = styled.h4`
@@ -53,60 +54,17 @@ const StyledChangeText = styled.p`
   color: ${(props) => props.color};
 `;
 
-const KPIChartProfit = ({ doc, objectId, chartTitle, qPages }) => {
-  const [chartObject, setChartObject] = useState();
-  const [chartHCData, setChartHCData] = useState([]);
-
+const KPIChartProfit = ({ objectId, chartTitle, qPages }) => {
   const qPagesArray = useMemo(() => qPages, [qPages]);
 
-  useChartObject({
-    doc,
+  const { chartHCData } = useChartObject({
     objectId,
-    chartObject,
     qPagesArray,
-    setChartObject,
-    setChartHCData,
   });
 
   const chartMatrix = chartHCData.map((item) => item.qMatrix);
 
-  let chartData = [];
-
-  if (chartMatrix[0]) {
-    chartData = chartMatrix[0].map((item) => ({
-      quarter: item[0].qText,
-      qState: item[0].qState,
-    }));
-
-    for (let i = 0; i < chartMatrix[1].length; i += 1) {
-      chartData[i].revenue = chartMatrix[1][i][0].qNum;
-    }
-    for (let i = 0; i < chartMatrix[2].length; i += 1) {
-      chartData[i].expenses = chartMatrix[2][i][0].qNum;
-    }
-    for (let i = 0; i < chartData.length; i += 1) {
-      chartData[i].profit = chartData[i].revenue - chartData[i].expenses;
-    }
-    for (let i = 0; i < chartData.length; i += 1) {
-      chartData[i].changeNum = chartMatrix[3][i][0].qNum;
-    }
-    for (let i = 0; i < chartData.length; i += 1) {
-      chartData[i].changeText = chartMatrix[3][i][0].qText;
-    }
-  }
-
-  let profit = 0;
-
-  for (let i = 0; i < chartData.length; i += 1) {
-    profit += chartData[i].profit;
-  }
-
-  let changeNum = 0;
-  let changeText = '';
-  if (chartData[0]) {
-    changeNum = chartData[0].changeNum;
-    changeText = chartData[0].changeText; // the changeText here is already formatted to a 2 decimal place, % value, although this could also be acheived by: (changeNum * 100).toFixed(2)
-  } // annual margin change is the same for all items in the selection
+  const { profit, changeText, changeNum } = useKPIChartProfitData(chartMatrix);
 
   const getChangeColor = () => {
     if (changeNum > 0) {

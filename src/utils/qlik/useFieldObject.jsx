@@ -1,6 +1,9 @@
-import React, { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useContext, useState } from 'react';
+import { QlikContext } from './qlikContext';
 
-const useFieldObject = (doc, selectionFieldName, setFieldObject) => {
+const useFieldObject = (selectionFieldName) => {
+  const [fieldObject, setFieldObject] = useState();
+  const { doc } = useContext(QlikContext);
   const getFieldObject = useCallback(async () => {
     const field = await doc.getField({
       qFieldName: selectionFieldName,
@@ -14,6 +17,7 @@ const useFieldObject = (doc, selectionFieldName, setFieldObject) => {
       getFieldObject();
     }
   }, [doc, getFieldObject]);
+  return fieldObject;
 };
 
 export default useFieldObject;
