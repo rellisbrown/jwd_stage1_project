@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
 import useChartObject from '../../utils/qlik/useChartObject';
@@ -11,12 +11,13 @@ import BarText from './BarText';
 import Label from './Label';
 import Slider from './Slider';
 import WaterfallChartSvgDefs from './WaterfallChartSvgDefs';
+import { useWaterfallChartData } from '../../utils/dataTransformations';
 
 const StyledChartContainer = styled.div`
   display: flex;
-  margin: 2rem auto auto 2rem;
+  margin: 2rem auto auto auto;
   height: 500px;
-  width: 50%;
+  width: 100%;
   position: relative;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
@@ -25,10 +26,12 @@ const StyledChartContainer = styled.div`
   }
   padding: 0rem 0rem 1rem 0rem;
   border-radius: 6px;
+  @media (max-width: 600px) {
+    height: 400px;
+  }
 `;
 
 const WaterfallChart = ({
-  doc,
   objectId,
   title,
   qPages,
@@ -40,16 +43,14 @@ const WaterfallChart = ({
   variantChecked,
   setVariantChecked,
 }) => {
-  const [chartObject, setChartObject] = useState();
-  const [chartHCData, setChartHCData] = useState([]);
-
   const qPagesArray = useMemo(() => qPages, [qPages]);
+  const { chartHCData } = useChartObject({
+    objectId,
+    qPagesArray,
+  });
 
   // Need to get Total Revenue and Total Expenses from Task 1.3 chart to make the expenses and profit figures in the Waterfall chart as consistent as possible with other data, hence the code below:
   // Props werent passed into the component due to the temporary nature of the solution
-  const [chartObjectRevExp, setChartObjectRevExp] = useState();
-
-  const [chartRevExpHCData, setChartRevExpHCData] = useState([]);
 
   const qPagesArrayRevExp = useMemo(
     () => [
@@ -83,13 +84,9 @@ const WaterfallChart = ({
 
   const revExpObjectId = 'xWWjCN';
 
-  useChartObject({
-    doc,
+  const { chartHCData: chartRevExpHCData } = useChartObject({
     objectId: revExpObjectId,
-    chartObject: chartObjectRevExp,
     qPagesArray: qPagesArrayRevExp,
-    setChartObject: setChartObjectRevExp,
-    setChartHCData: setChartRevExpHCData,
   });
 
   const chartMatrixRevExp = chartRevExpHCData.map((item) => item.qMatrix);
@@ -110,98 +107,17 @@ const WaterfallChart = ({
 
   //
 
-  useChartObject({
-    doc,
-    objectId,
-    chartObject,
-    qPagesArray,
-    setChartObject,
-    setChartHCData,
-  });
-
   const chartMatrix = chartHCData.map((item) => item.qMatrix);
 
-  let chartData = [];
-
-  if (indexField !== false) {
-    if (chartMatrix[indexField]) {
-      chartData = chartMatrix[indexField].map((item) => {
-        if (fieldNames[0].type === 'text') {
-          return {
-            field: item[0].qText,
-            qState: item[0].qState,
-          };
-        }
-        return {
-          field: item[0].qNum,
-          qState: item[0].qState,
-        };
-      });
-
-      for (let i = 0; i < chartMatrix[1]?.length; i += 1) {
-        chartData[i].value = chartMatrix[1][i][0].qNum;
-      }
-    }
-  } else {
-    chartData = chartMatrix.map((item, index) => {
-      if (fieldNames[0].type === 'text') {
-        return {
-          field: fieldNames[index].name,
-          value: item[0][0].qText,
-          qState: item[0][0].qState,
-        };
-      }
-      return {
-        field: fieldNames[index].name,
-        value: item[0][0].qNum,
-        qState: item[0][0].qState,
-      };
-    });
-  }
-
-  /* let totalValue = 0;
-  if (type !== 'ProfitAnalysis') {
-    for (const item of chartData) {
-      totalValue += item.value;
-    }
-
-    chartData.push({ field: 'Total', value: totalValue });
-  } else {
-    for (let i = 1; i < chartData.length; i += 1) {
-      totalValue += chartData[i].value;
-    }
-    chartData[0] = {
-      field: 'Total Revenue',
-      value: totalValue,
-    };
-  } */ // code used prior to the adjustment incorporating revenue/expenses from Task 1.3 table
-
-  let totalValue = 0;
-  if (type !== 'ProfitAnalysis') {
-    for (const item of chartData) {
-      totalValue += item.value;
-    }
-
-    chartData.push({ field: 'Total', value: totalValue });
-  } else {
-    totalValue = totalRevenue;
-    chartData[0] = {
-      field: 'Total Revenue',
-      value: totalRevenue,
-    };
-    let sumExistingCosts = 0;
-    for (let i = 1; i < chartData.length - 1; i += 1) {
-      sumExistingCosts += chartData[i].value;
-    }
-    chartData[chartData.length - 1] = {
-      field: 'Misc Costs',
-      value: totalExpenses - sumExistingCosts,
-    };
-    chartData[chartData.length] = {
-      field: 'Profit',
-      value: totalRevenue - totalExpenses,
-    };
-  } // adjusting figures based on values from Task 1.3 chart
+  const { chartData, totalValue, chartDataCumulative } = useWaterfallChartData(
+    chartMatrix,
+    indexField,
+    fieldNames,
+    type,
+    direction,
+    totalRevenue,
+    totalExpenses // did not include total revenue and expenses calculations within hook, as this is a temporary fix related to data issues...
+  );
 
   const wrapperRef = useRef();
   const dimensions = useResizeObserver(wrapperRef);
@@ -236,28 +152,6 @@ const WaterfallChart = ({
   const yScale = d3.scaleOrdinal().domain(yValues).range(yRange);
 
   const yTickFormat = (d) => d;
-
-  const chartDataCumulative = [];
-  let accumulator = 0;
-  if (direction !== 'reverse') {
-    for (let i = 0; i < chartData.length - 1; i += 1) {
-      accumulator += chartData[i].value;
-      chartDataCumulative[i] = {
-        field: chartData[i].field,
-        value: chartData[i].value,
-        accValue: accumulator,
-      };
-    }
-  } else {
-    for (let i = chartData.length - 1; i > 0; i += -1) {
-      accumulator += chartData[i].value;
-      chartDataCumulative[i - 1] = {
-        field: chartData[i].field,
-        value: chartData[i].value,
-        accValue: accumulator,
-      };
-    }
-  }
 
   const fillColors = {
     backdrop: '#eaf7f8',

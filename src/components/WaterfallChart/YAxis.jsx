@@ -5,6 +5,10 @@ const StyledYAxisText = styled.text`
   text-anchor: end;
   transform: ${(props) => props.offset};
   font-weight: 600;
+  font-size: ${(props) => (props.singleLine ? '16px' : '14px')};
+  @media (max-width: 600px) {
+    font-size: ${(props) => (props.singleLine ? '14px' : '12px')};
+  }
 `;
 
 const YAxis = ({
@@ -46,22 +50,23 @@ const YAxis = ({
               fontSize="16px"
               offset="translate(-17px, 0px)"
               key={value}
+              singleLine={value.length <= 1}
             >
               {tickFormat(value[0])}
             </StyledYAxisText>
           ) : (
             <>
               <StyledYAxisText
-                fontSize="14px"
                 key={value[0]}
                 offset={`translate(-17px, ${-bandWidth / 12 - 3}px)`}
+                singleLine={value.length <= 1}
               >
                 {tickFormat(value[0])}
               </StyledYAxisText>
               <StyledYAxisText
-                fontSize="14px"
                 key={value[1]}
                 offset={`translate(-17px, ${bandWidth / 12 + 3}px)`}
+                singleLine={value.length <= 1}
               >
                 {tickFormat(value[1])}
               </StyledYAxisText>

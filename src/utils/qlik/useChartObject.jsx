@@ -1,14 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useContext, useState } from 'react';
+import { QlikContext } from './qlikContext';
 
-const useChartObject = ({
-  doc,
-  objectId,
-  chartObject,
-  qPagesArray,
-  setChartObject,
-  setChartLayout,
-  setChartHCData,
-}) => {
+const useChartObject = ({ objectId, qPagesArray }) => {
+  const { doc } = useContext(QlikContext);
+  const [chartObject, setChartObject] = useState();
+  const [chartLayout, setChartLayout] = useState();
+  const [chartHCData, setChartHCData] = useState([]);
   const getChartObject = useCallback(async () => {
     const object = await doc.getObject(objectId);
 
@@ -87,6 +84,12 @@ const useChartObject = ({
     updateCallback,
     qPagesArray,
   ]);
+
+  return {
+    chartObject,
+    chartLayout,
+    chartHCData,
+  };
 };
 
 export default useChartObject;

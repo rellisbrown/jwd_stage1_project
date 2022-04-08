@@ -33,8 +33,8 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/destructuring-assignment': 'warn',
     'react/jsx-indent': 'off',
-    'indent': 'off',
-    'no-confusing-arrow': 'warn',
-    'function-paren-newline': 'warn'
+    indent: 'off',
+    'no-confusing-arrow': 'off',
+    'function-paren-newline': 'warn',
   },
 };

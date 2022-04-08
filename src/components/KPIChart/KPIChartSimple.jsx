@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import useChartObject from '../../utils/qlik/useChartObject';
 import TriangleIcon from '../../assets/icons/TriangleIcon';
@@ -13,7 +13,7 @@ const StyledChartContainer = styled.div`
   :hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
-  margin: auto 0rem auto auto;
+  margin: auto auto auto auto;
 `;
 
 const StyledChartTitle = styled.h4`
@@ -53,27 +53,16 @@ const StyledChangeText = styled.p`
   color: ${(props) => props.color};
 `;
 
-const KPIChartSimple = ({ doc, objectId, chartTitle, qPages }) => {
-  const [chartObject, setChartObject] = useState();
-  const [chartHCData, setChartHCData] = useState([]);
-
+const KPIChartSimple = ({ objectId, chartTitle, qPages, index }) => {
   const qPagesArray = useMemo(() => qPages, [qPages]);
 
-  useChartObject({
-    doc,
+  const { chartHCData } = useChartObject({
     objectId,
-    chartObject,
     qPagesArray,
-    setChartObject,
-    setChartHCData,
   });
 
   // Decided to get Total Revenue and Total Expenses from Task 1.3 chart to make the expenses and profit figures as consistent as possible with other data, hence the code below:
   // Props werent passed into the component due to the temporary nature of the solution
-
-  const [chartObjectRevExp, setChartObjectRevExp] = useState();
-
-  const [chartRevExpHCData, setChartRevExpHCData] = useState([]);
 
   const qPagesArrayRevExp = useMemo(
     () => [
@@ -107,13 +96,9 @@ const KPIChartSimple = ({ doc, objectId, chartTitle, qPages }) => {
 
   const revExpObjectId = 'xWWjCN';
 
-  useChartObject({
-    doc,
+  const { chartHCData: chartRevExpHCData } = useChartObject({
     objectId: revExpObjectId,
-    chartObject: chartObjectRevExp,
     qPagesArray: qPagesArrayRevExp,
-    setChartObject: setChartObjectRevExp,
-    setChartHCData: setChartRevExpHCData,
   });
 
   const chartMatrixRevExp = chartRevExpHCData.map((item) => item.qMatrix);
@@ -154,7 +139,7 @@ const KPIChartSimple = ({ doc, objectId, chartTitle, qPages }) => {
   }
 
   return (
-    <StyledChartContainer>
+    <StyledChartContainer index={index}>
       <StyledChartTitle>{chartTitle}</StyledChartTitle>
       {revenueExpense ? (
         <StyledValueText>

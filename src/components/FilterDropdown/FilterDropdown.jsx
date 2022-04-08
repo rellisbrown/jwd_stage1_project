@@ -13,6 +13,12 @@ const StyledOuterContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: auto;
+  @media (max-width: 1420px) {
+    grid-column-end: span 3;
+  }
+  @media (max-width: 1076px) {
+    grid-column-end: span 1;
+  }
 `;
 
 const StyledSearchContainer = styled.div`
@@ -185,25 +191,14 @@ const StyledClearSearchIcon = styled(ClearSearchIcon)`
   }
 `;
 
-const FilterDropdown = ({ doc, selectionFieldName }) => {
+const FilterDropdown = ({ selectionFieldName }) => {
   const [searchText, setSearchText] = useState('');
 
   const handleSearchInput = (e) => setSearchText(e.target.value);
 
-  const [fieldObject, setFieldObject] = useState();
+  const fieldObject = useFieldObject(selectionFieldName);
 
-  useFieldObject(doc, selectionFieldName, setFieldObject);
-
-  const [sessionObject, setSessionObject] = useState();
-  const [sessionObjectLayout, setSessionObjectLayout] = useState();
-
-  useSessionObject(
-    doc,
-    selectionFieldName,
-    sessionObject,
-    setSessionObject,
-    setSessionObjectLayout
-  );
+  const { sessionObjectLayout } = useSessionObject(selectionFieldName);
 
   let salesRepList = [];
   if (sessionObjectLayout) {
@@ -212,8 +207,9 @@ const FilterDropdown = ({ doc, selectionFieldName }) => {
     );
   }
 
-  const salesRepListFiltered = salesRepList.filter((item) =>
-    item.qText.toLowerCase().includes(searchText.toLowerCase())
+  const salesRepListFiltered = salesRepList.filter(
+    (item) => item.qText.toLowerCase().includes(searchText.toLowerCase())
+    // eslint-disable-next-line
   );
 
   const searchContainerRef = useRef();

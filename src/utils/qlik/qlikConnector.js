@@ -24,7 +24,7 @@ const QlikConnector = async (qlikConfig) => {
     try {
       const qGlobal = await session.open();
       if (qGlobal.loginUri && !qlikTicket) {
-        console.log('hit', qlikTicket);
+        /* console.log('hit', qlikTicket); */
         window.location.href = global.loginUri;
       }
       tempGlobal = qGlobal;
