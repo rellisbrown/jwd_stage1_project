@@ -4,10 +4,13 @@ import useQlik from '../utils/qlik/useQlik';
 import qlikConfig from '../utils/qlik/qlikConfig';
 import KPIChartSimple from './KPIChart/KPIChartSimple';
 import KPIChartProfit from './KPIChart/KPIChartProfit';
+import SalesRepTable from './SalesRepTable/SalesRepTable';
 
 const StyledDashboardContainer = styled.div`
   width: 90%;
   margin: auto;
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledKPIDiv = styled.div`
@@ -39,9 +42,12 @@ const Dashboard = () => {
     },
   ];
 
+  const SalesRepTableInfo = {
+    objectId: 'QJCCUM',
+  };
   return (
     <StyledDashboardContainer>
-      <StyledKPIDiv>
+      {/*  <StyledKPIDiv>
         <KPIChartSimple
           doc={doc}
           objectId={KPIChartsInfo[0].objectId}
@@ -58,7 +64,8 @@ const Dashboard = () => {
           objectId={KPIChartsInfo[2].objectId}
           chartTitle={KPIChartsInfo[2].title}
         />
-      </StyledKPIDiv>
+      </StyledKPIDiv> */}
+      <SalesRepTable doc={doc} objectId={SalesRepTableInfo.objectId} />
     </StyledDashboardContainer>
   );
 };
