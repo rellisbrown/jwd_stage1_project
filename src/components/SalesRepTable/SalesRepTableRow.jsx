@@ -14,6 +14,7 @@ const StyledTableCell = styled.td`
   padding: 0.5rem 1rem 0.5rem 1rem;
   text-align: right;
   color: #3d3d4a;
+  font-size: 0.8rem;
 `;
 
 const SalesRepTableRow = ({ item, index }) => (
@@ -23,7 +24,6 @@ const SalesRepTableRow = ({ item, index }) => (
         textAlign: 'left',
         backgroundColor: '#eaeaea',
         color: 'black',
-        fontSize: '1rem',
         fontWeight: 600,
       }}
     >

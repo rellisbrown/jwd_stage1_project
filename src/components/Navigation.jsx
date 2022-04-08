@@ -21,14 +21,11 @@ const StyledLogo = styled.img`
   height: 70px;
 `;
 
-const Navigation = () => {
-  const test = 1;
-  return (
-    <StyledNavigationContainer>
-      <StyledLogo src={Logo} />
-      <StyledHeaderText>JWD - Stage 1 Project</StyledHeaderText>
-    </StyledNavigationContainer>
-  );
-};
+const Navigation = () => (
+  <StyledNavigationContainer>
+    <StyledLogo src={Logo} />
+    <StyledHeaderText>JWD - Stage 1 Project</StyledHeaderText>
+  </StyledNavigationContainer>
+);
 
 export default Navigation;

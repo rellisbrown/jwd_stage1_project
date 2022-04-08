@@ -4,7 +4,7 @@ const useChartObject = ({
   doc,
   objectId,
   chartObject,
-  qPages,
+  qPagesArray,
   setChartObject,
   setChartLayout,
   setChartHCData,
@@ -21,7 +21,7 @@ const useChartObject = ({
     if (setChartHCData) {
       hyperCubeData = await object.getHyperCubeData({
         qPath: '/qHyperCubeDef',
-        qPages,
+        qPages: qPagesArray,
       });
     }
 
@@ -34,7 +34,14 @@ const useChartObject = ({
     if (setChartHCData) {
       setChartHCData(hyperCubeData);
     }
-  }, [doc, objectId, qPages, setChartObject, setChartLayout, setChartHCData]);
+  }, [
+    doc,
+    objectId,
+    qPagesArray,
+    setChartObject,
+    setChartLayout,
+    setChartHCData,
+  ]);
 
   const updateCallback = useCallback(async () => {
     let tempLayout = null;
@@ -46,7 +53,7 @@ const useChartObject = ({
     if (setChartHCData) {
       tempHyperCubeData = await chartObject.getHyperCubeData({
         qPath: '/qHyperCubeDef',
-        qPages,
+        qPages: qPagesArray,
       });
     }
     if (setChartLayout) {
@@ -56,7 +63,7 @@ const useChartObject = ({
     if (setChartHCData) {
       setChartHCData(tempHyperCubeData);
     }
-  }, [chartObject, qPages, setChartLayout, setChartHCData]);
+  }, [chartObject, qPagesArray, setChartLayout, setChartHCData]);
 
   useEffect(() => {
     if (doc) {
@@ -78,6 +85,7 @@ const useChartObject = ({
     setChartLayout,
     setChartHCData,
     updateCallback,
+    qPagesArray,
   ]);
 };
 

@@ -13,15 +13,17 @@ const StyledTextDiv = styled.div`
 
 const StyledText = styled.span`
   margin: auto;
-  color: white;
+  color: ${(props) => (props.alternateColor ? 'black' : 'white')};
 `;
 
 const BarText = ({ bandWidth, xScale, yScale, data, margin }) => {
-  const width = xScale(data.revenue) || 0;
+  const width = xScale(data.value) || 0;
   const height = bandWidth / 3 || 0;
-  const y = yScale(data.quarter) || 0;
-  const x = xScale(data.accRevenue) - xScale(data.revenue) || 0;
-
+  const y = yScale(data.field) || 0;
+  let x = 0;
+  if (xScale(data.value) < 40) {
+    x = xScale(data.accValue) - xScale(data.value) * 3 - 40;
+  } else x = xScale(data.accValue) - xScale(data.value);
   return (
     <StyledTextDiv
       width={width}
@@ -29,8 +31,8 @@ const BarText = ({ bandWidth, xScale, yScale, data, margin }) => {
       x={x + margin.left}
       y={y + margin.top + height}
     >
-      <StyledText>
-        {Number((data.revenue / 1000000).toFixed(0)).toLocaleString('en-UK')}m
+      <StyledText alternateColor={xScale(data.value) < 40}>
+        {Number((data.value / 1000000).toFixed(0)).toLocaleString('en-UK')}m
       </StyledText>
     </StyledTextDiv>
   );
