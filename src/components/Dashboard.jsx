@@ -5,6 +5,7 @@ import qlikConfig from '../utils/qlik/qlikConfig';
 import KPIChartSimple from './KPIChart/KPIChartSimple';
 import KPIChartProfit from './KPIChart/KPIChartProfit';
 import SalesRepTable from './SalesRepTable/SalesRepTable';
+import WaterfallChart from './WaterfallChart/WaterFallChart';
 
 const StyledDashboardContainer = styled.div`
   width: 90%;
@@ -45,9 +46,13 @@ const Dashboard = () => {
   const SalesRepTableInfo = {
     objectId: 'QJCCUM',
   };
+
+  const WaterfallChartInfo = {
+    objectId: 'GwVmqW',
+  };
   return (
     <StyledDashboardContainer>
-      {/*  <StyledKPIDiv>
+      {/* <StyledKPIDiv>
         <KPIChartSimple
           doc={doc}
           objectId={KPIChartsInfo[0].objectId}
@@ -64,8 +69,9 @@ const Dashboard = () => {
           objectId={KPIChartsInfo[2].objectId}
           chartTitle={KPIChartsInfo[2].title}
         />
-      </StyledKPIDiv> */}
-      <SalesRepTable doc={doc} objectId={SalesRepTableInfo.objectId} />
+      </StyledKPIDiv>
+      <SalesRepTable doc={doc} objectId={SalesRepTableInfo.objectId} /> */}
+      <WaterfallChart doc={doc} objectId={WaterfallChartInfo.objectId} />
     </StyledDashboardContainer>
   );
 };
